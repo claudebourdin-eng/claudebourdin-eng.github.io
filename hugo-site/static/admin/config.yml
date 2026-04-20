@@ -1,0 +1,39 @@
+﻿backend:
+  name: github
+  repo: claudebourdin-eng/melimelo973-site
+  branch: main
+  base_url: https://melimelo97300.netlify.app
+
+media_folder: hugo-site/static/images
+public_folder: /images
+locale: fr
+
+collections:
+  - name: poemes
+    label: Poemes
+    folder: hugo-site/content/poemes
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    editor:
+      preview: false
+    fields:
+      - label: Titre
+        name: title
+        widget: string
+      - label: Date de publication
+        name: date
+        widget: datetime
+        format: YYYY-MM-DDTHH:mm:ssZ
+        date_format: DD/MM/YYYY
+        time_format: HH:mm
+      - label: Themes
+        name: tags
+        widget: list
+        required: false
+      - label: Brouillon
+        name: draft
+        widget: boolean
+        default: false
+      - label: Contenu du poeme
+        name: body
+        widget: markdown
