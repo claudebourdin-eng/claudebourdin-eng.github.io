@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} â€” {{ .Site.Title }}{{ end }}</title>
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
     <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
 </head>
 <body>
     <header>
         <nav>
-            <a href="/" class="site-title">{{ .Site.Title }}</a>
+            <a href="{{ "/" | relURL }}" class="site-title">{{ .Site.Title }}</a>
             <div class="nav-links">
-                <a href="/">Accueil</a>
-                <a href="/poemes/">Tous les poÃ¨mes</a>
-                <a href="/tags/">Par thÃ¨me</a>
+                <a href="{{ "/" | relURL }}">Accueil</a>
+                <a href="{{ "/poemes/" | relURL }}">Tous les poemes</a>
+                <a href="{{ "/tags/" | relURL }}">Par theme</a>
             </div>
         </nav>
     </header>
     <main>{{ block "main" . }}{{ end }}</main>
     <footer>
-        <p>Â© {{ now.Year }} {{ .Site.Params.author }} â€” Tous droits rÃ©servÃ©s</p>
+        <p>© {{ now.Year }} {{ .Site.Params.author }} - Tous droits reserves</p>
     </footer>
 </body>
 </html>
-
