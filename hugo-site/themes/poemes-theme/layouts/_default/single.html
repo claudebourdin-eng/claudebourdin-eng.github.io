@@ -3,7 +3,7 @@
     <header>
         <h1>{{ .Title }}</h1>
         <div class="meta">
-            <time>{{ .Date | time.Format ":date_long" }}</time>
+            <time>{{ .Date.Format "02/01/2006" }}</time>
             {{ range .Params.tags }}
             <a href="/tags/{{ . | urlize }}" class="tag">{{ . }}</a>
             {{ end }}
@@ -16,4 +16,6 @@
     </nav>
 </article>
 {{ end }}
+
+
 
