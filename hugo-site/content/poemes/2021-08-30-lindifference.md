@@ -1,5 +1,5 @@
 ---
-title: "L&#39;indifférence"
+title: "L'indifférence"
 date: 2021-08-30T06:59:00+00:00
 slug: "lindifference"
 tags:
