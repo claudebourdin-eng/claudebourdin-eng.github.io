@@ -55,12 +55,6 @@ def clean_title(title):
     title = title.strip("'\" ")
     return title
 
-def normalize_title(title):
-    title = clean_title(title).lower().strip()
-    title = re.sub(r"['\"\u2018\u2019\u201c\u201d]", "", title)
-    title = re.sub(r'\s+', ' ', title)
-    return title
-
 def slugify(text):
     text = clean_title(text).lower()
     for src, dst in [('aàáâãäå','a'),('eèéêë','e'),('iìíîï','i'),('oòóôõö','o'),('uùúûü','u'),('ç','c'),('ñ','n')]:
@@ -68,7 +62,7 @@ def slugify(text):
             text = text.replace(c, dst)
     text = re.sub(r'[^a-z0-9\s-]', '', text)
     text = re.sub(r'[\s_-]+', '-', text)
-    return text.strip('-')
+    return text.strip('-') or "sans-titre"
 
 def html_to_markdown(html):
     h = html2text.HTML2Text()
@@ -109,8 +103,11 @@ def save_post(slug, date_pfx, content):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     name = f"{date_pfx}-{slug}.md"
     path = os.path.join(OUTPUT_DIR, name)
-    if os.path.exists(path):
-        return None
+    n = 1
+    while os.path.exists(path):
+        name = f"{date_pfx}-{slug}-{n}.md"
+        path = os.path.join(OUTPUT_DIR, name)
+        n += 1
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
     return name
@@ -123,37 +120,25 @@ def main():
     print(f"\nArticles deja importes : {len(imported_ids)}")
     blog_id = get_blog_id()
     posts   = get_all_posts(blog_id)
-    seen_titles = set()
-    new_posts = []
-    for p in posts:
-        if p["id"] not in imported_ids:
-            norm = normalize_title(p.get("title", ""))
-            if norm not in seen_titles:
-                seen_titles.add(norm)
-                new_posts.append(p)
+    new_posts = [p for p in posts if p["id"] not in imported_ids]
     print(f"\nNouveaux articles a importer : {len(new_posts)}")
     if not new_posts:
         print("\nOK Rien de nouveau. Le site est deja a jour !")
         return
-    saved, skipped, errors = 0, 0, 0
+    saved, errors = 0, 0
     for post in new_posts:
         try:
             slug, date_pfx, content = post_to_markdown(post)
             name = save_post(slug, date_pfx, content)
-            if name is None:
-                skipped += 1
-            else:
-                imported_ids.add(post["id"])
-                print(f"  OK {name}")
-                saved += 1
+            imported_ids.add(post["id"])
+            print(f"  OK {name}")
+            saved += 1
         except Exception as e:
             print(f"  ERREUR '{post.get('title','?')}' : {e}")
             errors += 1
     save_imported_ids(imported_ids)
     print(f"\n{'=' * 55}")
     print(f"  OK {saved} nouveaux poemes importes")
-    if skipped:
-        print(f"  Ignores (deja existants) : {skipped}")
     if errors:
         print(f"  ERREURS : {errors}")
     print(f"{'=' * 55}")
