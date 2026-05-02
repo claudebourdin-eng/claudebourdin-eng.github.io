@@ -1,5 +1,5 @@
 ---
-title: "L&#39;école aujourd&#39;hui"
+title: "L'école aujourd'hui"
 date: 2022-02-17T14:55:00+00:00
 slug: "lecole-aujourdhui"
 tags:
