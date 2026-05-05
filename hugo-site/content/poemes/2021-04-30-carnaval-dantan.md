@@ -1,0 +1,75 @@
+---
+title: "Carnaval d'antan"
+date: 2021-04-30T16:38:00+00:00
+slug: "carnaval-dantan"
+tags:
+  []
+original_url: "https://melimelo973.blogspot.com/2021/04/carnaval-dantan-carnaval-loree-de_30.html"
+draft: false
+---
+
+Carnaval !
+
+A l’orée de l’année,
+
+tu pointes déjà ton nez.
+
+Comme une mer déchaînée,
+
+tu grondes, tu moutonnes
+
+et rien, ni personne
+
+n’arrêtera
+
+ta marée déferlante.
+
+                              Carnaval !
+
+Je me souviens
+
+du temps pas si lointain
+
+où ton Université
+
+était chasse gardée.
+
+Seuls les initiés
+
+avaient droit de cité
+
+où les règles dictées
+
+faisaient loi et fierté.
+
+Aujourd’hui, chacun et chacune
+
+oubliant us et coutumes
+
+se défoulent en hurlant
+
+dans un chaos délirant.
+
+Tradition bafouée ! diront certains
+
+Évolution! Diront les autres.
+
+Contradiction !
+
+Où en est la raison ?
+
+Est-ce, ce lourd tribut payé
+
+à la modernité où soirées, veillées, dîners sont déjà révolus ?
+
+et où tradition enfouie est acquise à l’oubli ?
+
+Obstacle à cette ascension ?
+
+Il faut s’en faire une raison !
+
+**Carnaval d’antan**
+
+**Carnaval d’un temps.**
+
+**«** _**Tan fè tan, tan lésé tan**_**»**
