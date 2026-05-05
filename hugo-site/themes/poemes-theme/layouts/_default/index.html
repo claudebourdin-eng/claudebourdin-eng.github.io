@@ -1,51 +1,616 @@
-﻿{{ define "main" }}
-<div class="page-header">
-    <h1>Index des poemes</h1>
-    <p>{{ len (where .Site.RegularPages "Section" "poemes") }} poemes</p>
-</div>
 
-<div class="index-tabs">
-    <button class="tab-btn active" onclick="showTab('alpha')">Par titre</button>
-    <button class="tab-btn" onclick="showTab('date')">Par date</button>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Méli-Mélo 973 — Poésie guyanaise</title>
+  <meta name="description" content="Un jardin de mots, de rimes et d'émotions. Poèmes de Roseline N'Guyen Van Danh, enseignante retraitée et poète guyanaise.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<div id="alpha" class="tab-content active">
-    <h2>Par ordre alphabetique</h2>
-    {{ $pages := where .Site.RegularPages "Section" "poemes" }}
-    {{ range $pages.ByTitle }}
-    <div class="index-item">
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        <span class="index-date">{{ .Date.Format "02/01/2006" }}</span>
+    :root {
+      --gold: #f5c96a;
+      --gold-dim: rgba(245,201,106,0.4);
+      --coral: #f0825a;
+      --cream: #f5eedc;
+      --cream-60: rgba(245,238,220,0.6);
+      --cream-45: rgba(245,238,220,0.45);
+      --cream-25: rgba(245,238,220,0.25);
+      --cream-15: rgba(245,238,220,0.15);
+      --white-05: rgba(255,255,255,0.05);
+      --white-06: rgba(255,255,255,0.06);
+      --white-07: rgba(255,255,255,0.07);
+      --white-08: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: #1d5535;
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 0% 0%, #2d7a45 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 100% 100%, #e8622a 0%, transparent 50%),
+        radial-gradient(ellipse 50% 70% at 80% 10%, #f0a03a 0%, transparent 45%),
+        radial-gradient(ellipse 70% 50% at 20% 90%, #1a5c32 0%, transparent 50%),
+        #1d5535;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .site-wrapper {
+      max-width: 880px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.6rem 2rem;
+      border-bottom: 0.5px solid var(--cream-15);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--cream-60);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ===== HERO ===== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 4.5rem 2rem 3.5rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      border: 0.5px solid var(--gold-dim);
+      padding: 0.3rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 1.6rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1.1;
+      color: #fff8ed;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title em { font-style: italic; color: var(--gold); }
+    .hero-title .coral { color: var(--coral); }
+
+    .hero-sub {
+      font-style: italic;
+      font-size: 0.92rem;
+      color: var(--cream-60);
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .hero-ornament {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .hero-ornament span {
+      display: block;
+      width: 48px;
+      height: 0.5px;
+      background: rgba(245,201,106,0.5);
+    }
+
+    .hero-ornament i {
+      font-size: 0.85rem;
+      color: rgba(245,201,106,0.7);
+      font-style: normal;
+    }
+
+    .hero-illustration {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    /* ===== AUTHOR ===== */
+    .author-section {
+      margin: 0.5rem 2rem 3rem;
+      background: var(--white-06);
+      border: 0.5px solid rgba(245,201,106,0.22);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .author-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .author-portrait {
+      width: 94px;
+      height: 94px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(245,201,106,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .author-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--coral);
+      margin-bottom: 0.45rem;
+    }
+
+    .author-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: #fff8ed;
+      margin-bottom: 0.3rem;
+    }
+
+    .author-role {
+      font-size: 0.78rem;
+      color: var(--cream-45);
+      letter-spacing: 0.04em;
+    }
+
+    .author-divider {
+      height: 0.5px;
+      background: linear-gradient(90deg, transparent, rgba(245,201,106,0.2), transparent);
+      margin: 0 2rem;
+    }
+
+    .author-bio-block {
+      padding: 1.6rem 2rem 2rem;
+      position: relative;
+    }
+
+    .author-bio-block::before {
+      content: '\201C';
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      color: rgba(245,201,106,0.13);
+      position: absolute;
+      top: 0.2rem;
+      left: 1.6rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .author-bio {
+      font-size: 0.9rem;
+      color: rgba(245,238,220,0.72);
+      line-height: 1.9;
+      font-style: italic;
+      padding-left: 1rem;
+    }
+
+    .author-bio strong {
+      color: var(--gold);
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    .author-signature {
+      margin-top: 1.2rem;
+      padding-left: 1rem;
+      font-size: 0.78rem;
+      color: var(--cream-25);
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== POEMS ===== */
+    .poems-section { padding: 0 2rem 3rem; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.8rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #fff8ed;
+    }
+
+    .section-link {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .section-link:hover { opacity: 0.7; }
+
+    .poems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .poem-card {
+      background: var(--white-05);
+      border: 0.5px solid var(--cream-15);
+      border-radius: 6px;
+      padding: 1.5rem 1.4rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .poem-card:hover {
+      background: rgba(245,201,106,0.1);
+      border-color: rgba(245,201,106,0.4);
+      transform: translateY(-3px);
+    }
+
+    .poem-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 2rem;
+      background: var(--white-07);
+    }
+
+    .poem-tag {
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--coral);
+      margin-bottom: 0.7rem;
+      display: block;
+    }
+
+    .poem-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: #fff8ed;
+      margin-bottom: 0.7rem;
+      line-height: 1.3;
+    }
+
+    .poem-card.featured .poem-title { font-size: 1.5rem; }
+
+    .poem-excerpt {
+      font-size: 0.83rem;
+      color: rgba(245,238,220,0.5);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .featured-verse {
+      border-left: 1.5px solid rgba(245,201,106,0.45);
+      padding-left: 1.4rem;
+    }
+
+    .featured-verse p {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(245,238,220,0.7);
+      line-height: 2;
+    }
+
+    /* ===== THEMES ===== */
+    .themes-section { padding: 0 2rem 4rem; }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.4rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.35rem 1rem;
+      border: 0.5px solid rgba(245,238,220,0.2);
+      border-radius: 2px;
+      color: rgba(245,238,220,0.55);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ===== DIVIDER ===== */
+    .section-divider {
+      height: 0.5px;
+      background: linear-gradient(90deg, transparent, rgba(245,201,106,0.25), transparent);
+      margin: 0 2rem 2.5rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 0.5px solid var(--cream-15);
+      font-size: 0.72rem;
+      color: var(--cream-25);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 3rem 1.5rem 2.5rem;
+      }
+      .hero-illustration { display: none; }
+      .author-header { grid-template-columns: 1fr; text-align: center; }
+      .author-portrait { margin: 0 auto; }
+      .author-section { margin: 0.5rem 1rem 2.5rem; }
+      .poem-card.featured {
+        grid-template-columns: 1fr;
+      }
+      .featured-verse { display: none; }
+      .poems-section, .themes-section { padding-left: 1rem; padding-right: 1rem; }
+      nav { padding: 1.2rem 1rem; }
+      .nav-links { gap: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="site-wrapper">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">Méli-Mélo 973</a>
+    <ul class="nav-links">
+      <li><a href="/">Accueil</a></li>
+      <li><a href="/poemes/">Poèmes</a></li>
+      <li><a href="/tags/">Par thème</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <span class="hero-badge">Guyane · Poésie · 973</span>
+      <h1 class="hero-title">
+        Un jardin de <em>mots</em>,<br>
+        de rimes &amp;<br>
+        <span class="coral">d'émotions</span>
+      </h1>
+      <p class="hero-sub">Des vers nés sous le ciel équatorial, entre mangroves et savanes, entre langues et silences.</p>
+      <div class="hero-ornament">
+        <span></span>
+        <i>✦</i>
+        <span></span>
+      </div>
     </div>
-    {{ end }}
-</div>
 
-<div id="date" class="tab-content">
-    <h2>Par date</h2>
-    {{ range (where .Site.RegularPages "Section" "poemes").ByDate.Reverse }}
-    <div class="index-item">
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        <span class="index-date">{{ .Date.Format "02/01/2006" }}</span>
+    <div class="hero-illustration">
+      <!-- Esquisse illustrée : forêt guyanaise, fleuve, soleil -->
+      <svg viewBox="0 0 320 300" width="320" height="300" xmlns="http://www.w3.org/2000/svg" aria-label="Esquisse illustrée de la Guyane : forêt équatoriale, fleuve et soleil">
+        <!-- Soleil -->
+        <circle cx="245" cy="62" r="28" fill="none" stroke="#f5c96a" stroke-width="1.2" opacity="0.7"/>
+        <circle cx="245" cy="62" r="18" fill="rgba(245,201,106,0.12)" stroke="#f5c96a" stroke-width="0.7" opacity="0.6"/>
+        <line x1="245" y1="24" x2="245" y2="16" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="245" y1="100" x2="245" y2="108" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="207" y1="62" x2="199" y2="62" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="283" y1="62" x2="291" y2="62" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="218" y1="35" x2="212" y2="29" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="272" y1="89" x2="278" y2="95" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="272" y1="35" x2="278" y2="29" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <line x1="218" y1="89" x2="212" y2="95" stroke="#f5c96a" stroke-width="0.8" opacity="0.5"/>
+        <!-- Nuages -->
+        <ellipse cx="80" cy="50" rx="35" ry="12" fill="none" stroke="rgba(245,238,220,0.25)" stroke-width="0.8"/>
+        <ellipse cx="100" cy="44" rx="22" ry="9" fill="none" stroke="rgba(245,238,220,0.2)" stroke-width="0.8"/>
+        <ellipse cx="62" cy="45" rx="18" ry="8" fill="none" stroke="rgba(245,238,220,0.2)" stroke-width="0.8"/>
+        <!-- Collines fond -->
+        <path d="M0,180 Q80,120 160,150 Q240,120 320,155 L320,300 L0,300 Z" fill="none" stroke="rgba(245,238,220,0.12)" stroke-width="0.8"/>
+        <!-- Grand palmier gauche -->
+        <line x1="38" y1="280" x2="38" y2="130" stroke="rgba(245,238,220,0.5)" stroke-width="1.2"/>
+        <path d="M38,132 Q10,110 0,90" fill="none" stroke="rgba(100,200,130,0.6)" stroke-width="1"/>
+        <path d="M38,132 Q20,100 18,78" fill="none" stroke="rgba(100,200,130,0.55)" stroke-width="1"/>
+        <path d="M38,132 Q55,105 60,85" fill="none" stroke="rgba(100,200,130,0.55)" stroke-width="1"/>
+        <path d="M38,132 Q70,115 85,100" fill="none" stroke="rgba(100,200,130,0.5)" stroke-width="1"/>
+        <!-- Grand palmier droit -->
+        <line x1="282" y1="280" x2="282" y2="110" stroke="rgba(245,238,220,0.45)" stroke-width="1.2"/>
+        <path d="M282,112 Q255,90 248,68" fill="none" stroke="rgba(100,200,130,0.55)" stroke-width="1"/>
+        <path d="M282,112 Q268,88 265,68" fill="none" stroke="rgba(100,200,130,0.5)" stroke-width="1"/>
+        <path d="M282,112 Q300,88 308,70" fill="none" stroke="rgba(100,200,130,0.55)" stroke-width="1"/>
+        <path d="M282,112 Q310,100 318,88" fill="none" stroke="rgba(100,200,130,0.45)" stroke-width="0.9"/>
+        <!-- Arbres second plan -->
+        <line x1="100" y1="270" x2="100" y2="170" stroke="rgba(245,238,220,0.3)" stroke-width="0.9"/>
+        <path d="M100,172 Q82,155 75,140" fill="none" stroke="rgba(80,170,110,0.45)" stroke-width="0.8"/>
+        <path d="M100,172 Q118,152 125,138" fill="none" stroke="rgba(80,170,110,0.45)" stroke-width="0.8"/>
+        <line x1="200" y1="275" x2="200" y2="160" stroke="rgba(245,238,220,0.3)" stroke-width="0.9"/>
+        <path d="M200,162 Q182,145 175,128" fill="none" stroke="rgba(80,170,110,0.45)" stroke-width="0.8"/>
+        <path d="M200,162 Q218,143 225,128" fill="none" stroke="rgba(80,170,110,0.45)" stroke-width="0.8"/>
+        <line x1="148" y1="278" x2="148" y2="185" stroke="rgba(245,238,220,0.25)" stroke-width="0.8"/>
+        <path d="M148,187 Q135,172 130,158" fill="none" stroke="rgba(80,170,110,0.38)" stroke-width="0.7"/>
+        <path d="M148,187 Q162,170 168,156" fill="none" stroke="rgba(80,170,110,0.38)" stroke-width="0.7"/>
+        <!-- Fleuve -->
+        <path d="M0,235 Q60,225 120,232 Q180,240 240,228 Q290,220 320,230" fill="none" stroke="rgba(100,180,220,0.45)" stroke-width="2"/>
+        <path d="M0,242 Q60,232 120,239 Q180,247 240,235 Q290,227 320,237" fill="none" stroke="rgba(100,180,220,0.25)" stroke-width="1.2"/>
+        <!-- Pirogue -->
+        <path d="M130,234 Q145,230 160,234 Q145,238 130,234 Z" fill="none" stroke="rgba(245,201,106,0.55)" stroke-width="0.9"/>
+        <line x1="145" y1="233" x2="148" y2="222" stroke="rgba(245,201,106,0.45)" stroke-width="0.8"/>
+        <!-- Végétation basse -->
+        <path d="M0,270 Q15,255 25,268 Q35,255 50,270 Q65,255 80,268 Q90,258 100,270" fill="none" stroke="rgba(60,150,90,0.5)" stroke-width="1"/>
+        <path d="M220,272 Q235,258 248,270 Q260,257 272,270 Q285,256 300,270 Q310,260 320,270" fill="none" stroke="rgba(60,150,90,0.5)" stroke-width="1"/>
+        <!-- Oiseaux -->
+        <path d="M155,80 Q160,75 165,80" fill="none" stroke="rgba(245,238,220,0.4)" stroke-width="0.9"/>
+        <path d="M170,70 Q176,65 182,70" fill="none" stroke="rgba(245,238,220,0.35)" stroke-width="0.9"/>
+        <path d="M140,68 Q145,64 150,68" fill="none" stroke="rgba(245,238,220,0.3)" stroke-width="0.8"/>
+      </svg>
     </div>
-    {{ end }}
+  </section>
+
+  <!-- AUTRICE -->
+  <div class="author-section">
+    <div class="author-header">
+      <div class="author-portrait">
+        <svg viewBox="0 0 94 94" width="94" height="94" xmlns="http://www.w3.org/2000/svg" aria-label="Portrait esquissé de l'autrice">
+          <circle cx="47" cy="47" r="46" fill="rgba(245,201,106,0.07)" stroke="rgba(245,201,106,0.3)" stroke-width="1"/>
+          <circle cx="47" cy="32" r="13" fill="none" stroke="rgba(245,238,220,0.5)" stroke-width="1"/>
+          <path d="M28,84 Q30,60 47,57 Q64,60 66,84" fill="none" stroke="rgba(245,238,220,0.4)" stroke-width="1"/>
+          <path d="M34,26 Q35,14 47,12 Q59,14 60,26" fill="none" stroke="rgba(245,238,220,0.38)" stroke-width="0.9"/>
+          <path d="M34,26 Q27,30 30,40" fill="none" stroke="rgba(245,238,220,0.32)" stroke-width="0.9"/>
+          <path d="M60,26 Q67,30 64,40" fill="none" stroke="rgba(245,238,220,0.32)" stroke-width="0.9"/>
+          <line x1="62" y1="64" x2="76" y2="50" stroke="rgba(245,201,106,0.55)" stroke-width="1"/>
+          <path d="M76,50 L79,44 L73,48 Z" fill="rgba(245,201,106,0.4)" stroke="rgba(245,201,106,0.5)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <p class="author-label">L'autrice</p>
+        <h2 class="author-name">Roseline N'Guyen Van Danh</h2>
+        <p class="author-role">Enseignante retraitée · Poète guyanaise</p>
+      </div>
+    </div>
+
+    <div class="author-divider"></div>
+
+    <div class="author-bio-block">
+      <p class="author-bio">
+        Étant maintenant retraitée après une quarantaine d'années passée auprès des enfants de tous les niveaux — du CP au CM2 — comme enseignante, de la rééducation psychomotrice en Maternelle jusqu'au Centre Médico Éducatif pour enfants handicapés, j'ai jugé très judicieux de mettre en mots mes souvenirs. Souvent des souvenirs de jeunesse, d'exprimer mon inquiétude et parfois mon désarroi face à cette situation latente qui n'apporte aucun changement notable au devenir de <strong>cette Guyane si chère à mon cœur</strong>.
+        <br><br>
+        Mon recueil se présente comme un méli-mélo de paroles. Ce méli-mélo révèle la diversité des sujets abordés, parfois dans le temps — d'hier à aujourd'hui. Chacun pourra s'y retrouver et peut-être même s'y reconnaître. Quelques-uns n'adhèreront pas à mon point de vue, mais qu'importe ! <strong>C'est la diversité d'opinions qui enrichit un groupe.</strong>
+        <br><br>
+        Bonne lecture.
+      </p>
+      <p class="author-signature">— Roseline N'Guyen Van Danh</p>
+    </div>
+  </div>
+
+  <!-- POÈMES -->
+  <section class="poems-section">
+    <div class="section-header">
+      <h2 class="section-title">Derniers poèmes</h2>
+      <a href="/poemes/" class="section-link">Voir tous →</a>
+    </div>
+
+    <div class="poems-grid">
+      <!-- Carte vedette : à remplacer par votre premier poème -->
+      <a href="#" class="poem-card featured">
+        <div>
+          <span class="poem-tag">À la une</span>
+          <h3 class="poem-title">Titre de votre poème vedette</h3>
+          <p class="poem-excerpt">Un bref résumé ou les premiers mots de ce poème viendront ici automatiquement selon votre configuration Hugo.</p>
+        </div>
+        <div class="featured-verse">
+          <p>
+            Premiers vers<br>
+            de votre poème<br>
+            ici en avant-goût…
+          </p>
+        </div>
+      </a>
+
+      <!-- Cartes secondaires : à dupliquer selon vos poèmes -->
+      <a href="#" class="poem-card">
+        <span class="poem-tag">Mémoire</span>
+        <h3 class="poem-title">Titre du poème</h3>
+        <p class="poem-excerpt">Quelques mots d'introduction ou le début du poème.</p>
+      </a>
+
+      <a href="#" class="poem-card">
+        <span class="poem-tag" style="color:#f5c96a;">Identité</span>
+        <h3 class="poem-title">Titre du poème</h3>
+        <p class="poem-excerpt">Quelques mots d'introduction ou le début du poème.</p>
+      </a>
+
+      <a href="#" class="poem-card">
+        <span class="poem-tag">Guyane</span>
+        <h3 class="poem-title">Titre du poème</h3>
+        <p class="poem-excerpt">Quelques mots d'introduction ou le début du poème.</p>
+      </a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- THÈMES -->
+  <section class="themes-section">
+    <div class="section-header">
+      <h2 class="section-title">Explorer par thème</h2>
+    </div>
+    <div class="tags-row">
+      <a href="/tags/nature/" class="tag">Nature</a>
+      <a href="/tags/memoire/" class="tag">Mémoire</a>
+      <a href="/tags/identite/" class="tag">Identité</a>
+      <a href="/tags/amour/" class="tag">Amour</a>
+      <a href="/tags/guyane/" class="tag">Guyane</a>
+      <a href="/tags/foret/" class="tag">Forêt</a>
+      <a href="/tags/lumiere/" class="tag">Lumière</a>
+      <a href="/tags/temps/" class="tag">Temps</a>
+      <a href="/tags/resistance/" class="tag">Résistance</a>
+      <a href="/tags/fleuve/" class="tag">Fleuve</a>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Méli-Mélo 973 — Roseline N'Guyen Van Danh · Tous droits réservés
+  </footer>
+
 </div>
-
-<style>
-.index-tabs { display: flex; gap: 1rem; margin: 2rem 0 1rem; }
-.tab-btn { padding: .5rem 1.2rem; border: 1px solid var(--accent); border-radius: 20px; background: none; color: var(--accent); cursor: pointer; font-family: var(--font-ui); }
-.tab-btn.active { background: var(--accent); color: white; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.index-item { display: flex; justify-content: space-between; padding: .5rem 0; border-bottom: 1px solid var(--border); }
-.index-date { color: var(--muted); font-size: .85rem; font-family: var(--font-ui); }
-</style>
-
-<script>
-function showTab(name) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(name).classList.add('active');
-    event.target.classList.add('active');
-}
-</script>
-{{ end }}
+</body>
+</html>
