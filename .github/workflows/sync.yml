@@ -49,7 +49,9 @@ jobs:
         working-directory: hugo-site
 
       - name: Restore custom homepage
-        run: cp hugo-site/static/index-custom.html hugo-site/public/index.html
+        run: |
+          cp hugo-site/static/index-custom.html hugo-site/public/index.html
+          echo "Homepage restored successfully"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
