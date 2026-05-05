@@ -1,5 +1,4 @@
-﻿name: Sync Blogger vers GitHub Pages
-
+name: Sync Blogger vers GitHub Pages
 on:
   schedule:
     - cron: "0 23 * * *"
@@ -9,12 +8,10 @@ on:
         description: "Reimporter tous les articles ?"
         required: false
         default: "false"
-
 permissions:
   contents: write
   pages: write
   id-token: write
-
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
@@ -50,6 +47,9 @@ jobs:
       - name: Build Hugo site
         run: hugo --minify
         working-directory: hugo-site
+
+      - name: Restore custom homepage
+        run: cp hugo-site/static/index-custom.html hugo-site/public/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
