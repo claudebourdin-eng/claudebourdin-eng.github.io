@@ -39,8 +39,8 @@ jobs:
           hugo-version: "0.128.0"
           extended: true
       - name: Build Hugo site
-        run: hugo --minify
-        working-directory: hugo-site
+       run: hugo --minify
+       working-directory: hugo-site
       - name: Restore custom homepage and assets
         run: |
           cp hugo-site/static/index-custom.html hugo-site/public/index.html
