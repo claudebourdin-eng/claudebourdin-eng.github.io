@@ -44,7 +44,7 @@ jobs:
      - name: Restore custom homepage and CSS
         run: |
           cp hugo-site/static/index-custom.html hugo-site/public/index.html
-          cp hugo-site/static/css/style.css hugo-site/public/css/style.css
+         cp hugo-site/static/css/style.css hugo-site/public/css/style.css
           cp hugo-site/static/nature01.jpg hugo-site/public/nature01.jpg
           echo "Homepage, CSS and photo restored successfully"
       - name: Deploy to GitHub Pages
