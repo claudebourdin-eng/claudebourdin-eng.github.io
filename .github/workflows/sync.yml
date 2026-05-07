@@ -14,8 +14,8 @@ permissions:
   id-token: write
 jobs:
   sync-and-deploy:
-  runs-on: ubuntu-latest
-  steps:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
@@ -39,13 +39,13 @@ jobs:
           hugo-version: "0.128.0"
           extended: true
       - name: Build Hugo site
-       run: hugo --minify
-       working-directory: hugo-site
+        run: hugo --minify
+        working-directory: hugo-site
       - name: Restore custom homepage and assets
         run: |
           cp hugo-site/static/index-custom.html hugo-site/public/index.html
           cp hugo-site/static/nature01.jpg hugo-site/public/nature01.jpg
-          echo "Homepage and assets restored successfully"
+          echo "Done"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
