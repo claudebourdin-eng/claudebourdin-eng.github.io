@@ -45,7 +45,7 @@ jobs:
         run: |
           cp hugo-site/static/index-custom.html hugo-site/public/index.html
           cp hugo-site/static/nature01.jpg hugo-site/public/nature01.jpg
-          echo "Done"
+          echo "Homepage and assets restored successfully"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
